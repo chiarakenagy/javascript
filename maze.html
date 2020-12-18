@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title> Maze Game </title>
+  </head>
+<body>
+
+<canvas id="canvas" width="560" height="560" > Your browser does not support HTML5.</canvas>
+<noscript> Javascript is not enabled </noscript>
+
+<script>
+var canvas = document.getElementById("mazecanvas");
+var ctx = canvas.getContext("2d");
+var startRectX = 425;
+var startRectY = 3;
+var mazeWidth = 556;
+var mazeHeight = 556;
+
+
+function drawMazeRect(rectx, rectY) {
+  makeWhite(0,0, canvas.width, canvas.height);
+  var mazePic = new Image();
+  mazePic.onload = function () {
+    context.drawImage(mazePic, 0, 0);
+    drawRectangle(rectX, rectY, "#0000FF", false, true);
+    context.beginPath();
+    context.arc(542,122,7,0,2 * Math.PI, false);
+    context.closePath ();
+    context.fillStyle = '#00FF00';
+    context.fill();
+  };
+  mazePic.src = "maze2"
+}
+
+function makeWhite(x, y, w, h) {
+    context.beginPath();
+    context.rect(x, y, w, h);
+    context.closePath();
+    context.fillStyle = "white";
+    context.fill();
+}
+
+function drawRect(x, y, style) {
+  makeWhite(currentRectX, currentRectY, 15, 15);
+  currentRectX = x;
+  currentRectY = y;
+  context.beginPath();
+  context.rect(x,y, 15, 15);
+  context.closePath();
+  context.fillStyle = style;
+  context.fill();
+}
+
+drawMazeRect(425, 3); // { 425, 3 } is the position of the blue rectangle on the canvas
+</script>
+
+</body>
+</html>
