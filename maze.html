@@ -5,12 +5,12 @@
   </head>
 <body>
 
-<canvas id="canvas" width="560" height="560" > Your browser does not support HTML5.</canvas>
+<canvas id="mazecanvas" width="560" height="560" > Your browser does not support HTML5.</canvas>
 <noscript> Javascript is not enabled </noscript>
 
 <script>
 var canvas = document.getElementById("mazecanvas");
-var ctx = canvas.getContext("2d");
+var context = canvas.getContext("2d");
 var startRectX = 425;
 var startRectY = 3;
 var mazeWidth = 556;
@@ -22,14 +22,14 @@ function drawMazeRect(rectx, rectY) {
   var mazePic = new Image();
   mazePic.onload = function () {
     context.drawImage(mazePic, 0, 0);
-    drawRectangle(rectX, rectY, "#0000FF", false, true);
+    drawRect(rectX, rectY, "#0000FF", false, true);
     context.beginPath();
     context.arc(542,122,7,0,2 * Math.PI, false);
     context.closePath ();
     context.fillStyle = '#00FF00';
     context.fill();
   };
-  mazePic.src = "maze2"
+  mazePic.src = "maze2.gif"
 }
 
 function makeWhite(x, y, w, h) {
@@ -51,6 +51,68 @@ function drawRect(x, y, style) {
   context.fill();
 }
 
+function canMoveTo(destX, destY) {
+    var imgData = context.getImageData(destX, destY, 15, 15);
+    var data = imgData.data;
+    var canMove = 1; // 1 means: the rectangle can move
+    if (destX >= 0 && destX <= mazeWidth - 15 && destY >= 0 && destY <= mazeHeight - 15) { // check whether the rectangle would move inside the bounds of the canvas
+        for (var i = 0; i < 4 * 15 * 15; i += 4) { // look at all pixels
+            if (data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 0) { // black
+                canMove = 0; // 0 means: the rectangle can't move
+                break;
+            }
+            else if (data[i] === 0 && data[i + 1] === 255 && data[i + 2] === 0) { // lime: #00FF00
+                canMove = 2; // 2 means: the end point is reached
+                break;
+            }
+        }
+    }
+    else {
+        canMove = 0;
+    }
+    return canMove;
+}
+
+function moveRect(e) {
+  var newX ;
+  var newY ;
+  var canMove ;
+  e = e || window.event;
+  switch (e.keyCode) {
+    case 87: // W key
+      newX = currentRectX;
+      newY = currentRectY - 3;
+      break;
+    case 65: // A key
+      newX = currentRectX - 3;
+      newY = currentRectY;
+      break;
+    case 83: // s k
+      newX = currentRectX;
+      newY = currentRectY + 3;
+      break;
+    case 68: //D key
+      newX = currentRectX + 3;
+      newY = currentRectY;
+      break;
+    default: return;
+  }
+  movingAllowed = canMoveTo (newX, newY);
+  if (movingAllowed ===1) {
+    drawRect(newX, newY, "#0000FF");
+    currentRectX = newX;
+    currentRectY = newY;
+  }
+  else if (movingAllowed === 2) {
+    makeWhite(0,0, canvas.width, canvas.height);
+    context.font = "40px Arial";
+    context.fillStyle = "pink";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText("Congratulations!", canvas.width / 2, canvas.height / 2);
+    window.removeEventListener("keydown", moveRect, true);
+  }
+}
 drawMazeRect(425, 3); // { 425, 3 } is the position of the blue rectangle on the canvas
 </script>
 
