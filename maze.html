@@ -32,6 +32,7 @@ function drawMazeRect() { // Draws the Maze and Rectangle
 
 }
 
+
 function drawRect(style) { // Draws the Blue Rectangle
   context.fillStyle = style;
   context.fillRect(playerX, playerY, 15, 15)
@@ -62,11 +63,9 @@ function canMoveTo(destX, destY) { // Check if the player can move forward
 
 
 function moveRect(e) { // Determines the outcome of the player's move
-
   movingAllowed = canMoveTo(playerX, playerY);
   if (movingAllowed == 1) {
     drawRect(playerX, playerY, "#0000FF");
-
   }
   else if (movingAllowed == 2) {
     context.font = "40px Arial";
@@ -77,6 +76,7 @@ function moveRect(e) { // Determines the outcome of the player's move
     window.removeEventListener("keydown", moveRect, true);
   }
 }
+
 
 function myKeyDown(event) { // Detects keys and adjusts the players position
   switch (event.keyCode) {
@@ -101,9 +101,9 @@ function myKeyDown(event) { // Detects keys and adjusts the players position
 function animate() { // Animates the entire Maze, regenerating the image based on the current status of its items (rect)
   context.clearRect(0, 0, canvas.width, canvas.height);
   drawMazeRect(); // { 425, 3 } is the position of the blue rectangle on the canvas
-
   window.requestAnimationFrame(animate);
 }
+
 
 window.addEventListener("keydown", myKeyDown);
 window.requestAnimationFrame(animate);
